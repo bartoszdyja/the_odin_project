@@ -9,7 +9,6 @@ def substrings(text, dictionary)
       end
     end
   end
-  puts results
 end
 
 substrings("Howdy partner, sit down! How's it going?", dictionary)
