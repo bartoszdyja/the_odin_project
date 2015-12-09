@@ -1,6 +1,26 @@
 class Hangman
   
-  def run
+  def run 
+    puts "Hello, enter command:"
+    puts "s - start new game"
+    puts "l - load saved game"
+    command = gets.chomp
+    case command
+      when 's' then start_new_game
+      when 'l' then load_saved_game
+    end
+        
+  end
+
+  def load_saved_game
+    state = Store.load_game
+    #@g=Game.new(state["answer"],state["total"],state["current_state"])
+    @g=Game.new(state["answer"],state["total_attempts"],state["current_state"])
+    @g.run
+
+  end
+
+  def start_new_game
     Store.download_dictionary
     Store.read_dictionary
     @g=Game.new(Store.read_dictionary)
@@ -11,7 +31,7 @@ end
 
 class Store
   require 'open-uri'
-
+  require 'json'
   DICTIONARY_FILE='dictionary.txt'
   
   def self.download_dictionary
@@ -28,13 +48,18 @@ class Store
     end until @answer.length.between?(5,12)
     return @answer
   end
+  
+  def self.load_game
+    file = File.read('saved_game.json')
+    save_hash = JSON.parse(file)
+  end
 end
 
 class Game
-  def initialize(word)
+  def initialize(word, total=0, array=Array.new(word,'_'))
     @word = word
-    @answer_arr = Array.new(@word.length, '_')
-    @total = 0
+    @answer_arr = array
+    @total=total
   end
 
   def run
@@ -50,7 +75,26 @@ class Game
       puts "Attemp no: #{@total}"
       puts 
     end until letter=='quit'
+    puts 'Do you want to save the game?'
+    puts 'yes / no'
+    answer=gets.chomp
+    save_game(@word, @total, @answer_arr) if answer=='yes'
   end
+
+  def save_game(word, total, array)
+    
+    save_hash = {
+      answer: word,
+      total_attempts: total,
+      current_state: array
+    }
+
+    File.open("saved_game.json", 'w') do |f|
+      f.write(JSON.pretty_generate(save_hash))
+    end  
+  end
+
+  
 
   def guess
     print @answer_arr.join(' ')

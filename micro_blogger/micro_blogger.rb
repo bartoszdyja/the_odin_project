@@ -13,6 +13,7 @@ class MicroBlogger
       puts
       puts 'Enter command:'
       puts 'q - quit'
+      puts 'f - friends'
       puts 't - send tweet'
       command = gets.chomp
       case command
@@ -31,6 +32,7 @@ class MicroBlogger
   end
 
   def show_friends
+    puts 'Accessing data...'
     friends = @client.friends
     puts "You have currently #{friends.count} friends"
     friends.each do |f|
