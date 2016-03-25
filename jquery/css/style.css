@@ -1,0 +1,14 @@
+body {
+  background-color: #eee;
+}
+
+.container {
+  width: 920px;
+  margin: auto;
+}
+
+.box{
+  float: left;
+  border: 1px solid #eee;
+  background-color: #fff;
+}
